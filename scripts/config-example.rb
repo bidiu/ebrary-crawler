@@ -5,7 +5,7 @@ $result_no = 1
 # in second unit
 $request_timeout = 10
 # imitate human, in second unit
-# TODO adopt randome number
+# TODO adopt random number
 $suspend = 5
 $user = "username"
 $pwd = "password"
