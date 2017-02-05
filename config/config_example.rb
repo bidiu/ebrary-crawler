@@ -1,5 +1,7 @@
 $browser = :chrome
 $host = "https://library.carleton.ca/"
+# not incude parameters
+$book_url = "http://site.ebrary.com.proxy.library.carleton.ca/lib/oculcarleton/detail.action"
 $book_title = "Cryptography Engineering"
 $result_no = 1
 # in second unit
