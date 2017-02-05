@@ -1,7 +1,6 @@
 require "./cookie.rb"
 
 class MyLogin
-
 	@@driver = nil
 
 	def self.set_driver(driver)
@@ -60,5 +59,4 @@ class MyLogin
 			login
 		end
 	end
-
 end

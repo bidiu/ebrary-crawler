@@ -9,7 +9,6 @@ $docid_filename = File.join(CUR_DIR, "..", DOCID_DIR_NAME, DOCID_FILE_NAME)
 
 
 class MyCookie
-
 	def self.save_cookies(cookie_enumerator)
 		f = File.new($cookie_filename, "w")
 		cookie_enumerator.each do |cookie|
@@ -45,7 +44,7 @@ class MyCookie
 
 	# clear cookies and docid
 	def self.clear
-		File.delete $cookie_filename, $docid_filename
+		File.delete $cookie_filename if File.file? $cookie_filename
+		File.delete $docid_filename if File.file? $docid_filename
 	end
-
 end
