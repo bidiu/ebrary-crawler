@@ -22,20 +22,32 @@ class MyLogin
 	end
 
 	# navigate to book detail page (not book view page)
+	# return: whether fresh login
 	def self.to_book_detail(driver = nil)
 		set_driver(driver)
+		fresh_login = nil
 		if (cookies = MyCookie.load_cookies)
 			# have cookies right now, although might already expired
+			@@driver.navigate.to $login_url
+			@@driver.manage.delete_all_cookies
 			cookies.each do |cookie|
-				@@driver.manage.add_cookie cookie
+				if cookie = process_cookie(cookie) then
+					@@driver.manage.add_cookie cookie
+				end
 			end
-			@@driver.navigate.to "#{$book_url}?docId=#{MyCookie.load_docid}"
+			sleep sleep_duration
+			@@driver.navigate.to "#{$book_url}?docID=#{MyCookie.load_docid}"
 			if login_page?
+				# cookies expired
+				fresh_login = true
 				sleep sleep_duration
 				login
+			else
+				fresh_login = false
 			end
 		else
-			# cookies not avaiable
+			# no saved session cookies
+			fresh_login = true
 			@@driver.navigate.to $host
 			@@driver.find_element(:class, "summonbox").send_keys $book_title
 			@@driver.find_element(:class, "summonsubmit").click
@@ -58,5 +70,13 @@ class MyLogin
 			sleep sleep_duration
 			login
 		end
+		return fresh_login
+	end
+
+	# if not valid cookie, then return nil
+	def self.process_cookie(cookie)
+		cookie[:domain] = $cookie_domain unless $cookie_domain.include? cookie[:domain]
+		cookie[:expires] = nil if cookie[:expires]
+		cookie
 	end
 end

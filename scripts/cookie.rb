@@ -42,7 +42,7 @@ class MyCookie
 		File.read $docid_filename
 	end
 
-	# clear cookies and docid
+	# clear all local saved cookies and docid
 	def self.clear
 		File.delete $cookie_filename if File.file? $cookie_filename
 		File.delete $docid_filename if File.file? $docid_filename
