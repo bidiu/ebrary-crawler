@@ -42,8 +42,7 @@ end
 # about to download
 begin
 	sleep sleep_duration
-	# TODO
-	# driver.find_element(:id, "readerReadBtnId").click
+	driver.find_element(:id, "readerReadBtnId").click
 rescue Selenium::WebDriver::Error::NoSuchElementError
 	abort "Fail to download - the book is being used by other users."
 ensure
