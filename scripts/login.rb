@@ -31,7 +31,7 @@ class MyLogin
 			@@driver.navigate.to $login_url
 			@@driver.manage.delete_all_cookies
 			cookies.each do |cookie|
-				if cookie = process_cookie(cookie) then
+				if cookie = process_cookie(cookie)
 					@@driver.manage.add_cookie cookie
 				end
 			end
