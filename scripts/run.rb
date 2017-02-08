@@ -18,17 +18,16 @@ def sleep_duration
 	real.to_i
 end
 
-# TODO
 def download_onepage(driver, page_no)
 	img = async_element(:css, "#mainViewerImgCloakWrapper_#{page_no} img", driver,
 						times: $max_try, timeout: $request_timeout)
 	if not $page_height
 		$page_height = driver.execute_script(
 						"return document.getElementById(\"mainViewerImgCloakWrapper_#{page_no}\").style.height").to_i
-		$view_height = driver.find_element(:id, "mainViewerPagesContainerWrapper").size.height
+		$view_height = driver.execute_script(
+						"return document.getElementById(\"mainViewerPagesContainerWrapper\").style.height").to_i
 	end
-
-	# puts "#{$page_height} #{$view_height}"
+	# TODO
 	puts img["src"]
 end
 
@@ -60,7 +59,7 @@ def async_element(selector_type, selector, driver, times: 1, timeout:)
 end
 
 def page_pos(page_no, page_height)
-	page_no * page_height + PAGE_POS_OFFSET
+	page_no * (page_height + PAGE_POS_OFFSET)
 end
 
 # validate configuration
@@ -107,8 +106,8 @@ begin
 		driver.execute_script("document.getElementById(\"mainViewer\").scrollTop = #{next_page_pos}")
 	end
 	puts "Data successfully downloaded into data folder."
-# rescue Selenium::WebDriver::Error::NoSuchElementError
-# 	abort "Fail to download - probably the book's being used by others."
+rescue Selenium::WebDriver::Error::NoSuchElementError
+	abort "Fail to download - probably the book's being used by others."
 ensure
 	driver.quit
 end
