@@ -2,6 +2,7 @@
 
 require "selenium-webdriver"
 require "json"
+require "./global.rb"
 require "./cookie.rb"
 require "./login.rb"
 require "../config/config.rb"
@@ -17,10 +18,18 @@ def sleep_duration
 	real.to_i
 end
 
+# TODO
 def download_onepage(driver, page_no)
-	img = async_element(:css, "#mainViewerImgCloakWrapper_#{page_no} img", driver, 
+	img = async_element(:css, "#mainViewerImgCloakWrapper_#{page_no} img", driver,
 						times: $max_try, timeout: $request_timeout)
-	puts img["src"]	
+	if not $page_height
+		$page_height = driver.execute_script(
+						"return document.getElementById(\"mainViewerImgCloakWrapper_#{page_no}\").style.height").to_i
+		$view_height = driver.find_element(:id, "mainViewerPagesContainerWrapper").size.height
+	end
+
+	# puts "#{$page_height} #{$view_height}"
+	puts img["src"]
 end
 
 # times - max retry times
@@ -36,17 +45,22 @@ def wait_async_request(times, timeout)
 			break
 		rescue Selenium::WebDriver::Error::TimeOutError
 			abort "Request timeout - consider increasing the value of 'request_timeout'." if t >= times
+			puts "Request timeouts, retry - #{t}/#{times}.."
 		end
 	end
 end
 
 # TODO common
 # see wait_async_request
-def async_element(selector_type, selector, driver, times:, timeout:)
+def async_element(selector_type, selector, driver, times: 1, timeout:)
 	wait_async_request(times, timeout) do
 		driver.find_elements(selector_type, selector).size > 0
 	end
 	driver.find_element(selector_type, selector)
+end
+
+def page_pos(page_no, page_height)
+	page_no * page_height + PAGE_POS_OFFSET
 end
 
 # validate configuration
@@ -63,7 +77,7 @@ if MyLogin.to_book_detail
 	MyCookie.save_cookies driver.manage.all_cookies.each
 	MyCookie.save_docid(/\d+$/.match(driver.current_url))
 else
-	puts "Just tried to login with following saved cookies: "
+	puts "Just logged in with following saved cookies: "
 	driver.manage.all_cookies.each do |cookie|
 		puts cookie.to_json
 	end
@@ -75,15 +89,26 @@ begin
 	driver.find_element(:id, "readerReadBtnId").click
 
 	# start the downloading logic
-	page_info_span = async_element(:css, "#tool-pageloc .total-number-of-pages", driver, 
-								   times: 1, timeout: $request_timeout)
-	total_page_no = /\d+$/.match(page_info_span.text).to_s.to_i
+	zoom_btn = async_element(:css, "button.icon-page-zoom-in", driver,
+							 timeout: $request_timeout)
+	$zoom_in.times { zoom_btn.click }
+	page_info_span = async_element(:css, "#tool-pageloc .total-number-of-pages", driver,
+								   timeout: $request_timeout)
 	# TODO support breakpoint download
-	1.upto(total_page_no) do |page_no|
+	page_no = 1
+	while true
+		sleep sleep_duration
 		download_onepage(driver, page_no)
+		# one page downloaded
+		page_no += 1
+		next_page_pos = page_pos(page_no, $page_height)
+		break if next_page_pos >= $view_height
+		# scroll to next page
+		driver.execute_script("document.getElementById(\"mainViewer\").scrollTop = #{next_page_pos}")
 	end
-rescue Selenium::WebDriver::Error::NoSuchElementError
-	abort "Fail to download - probably the book's being used by others."
+	puts "Data successfully downloaded into data folder."
+# rescue Selenium::WebDriver::Error::NoSuchElementError
+# 	abort "Fail to download - probably the book's being used by others."
 ensure
 	driver.quit
 end
