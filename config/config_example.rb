@@ -1,3 +1,4 @@
+# or :firefox
 $browser = :chrome
 # the url used to fresh login (without any saved session cookie)
 $host = "https://library.carleton.ca/"
@@ -9,7 +10,9 @@ $cookie_domain = ".library.carleton.ca"
 $book_title = "Cryptography Engineering"
 $result_no = 1
 # in second unit
-$request_timeout = 10
+$request_timeout = 16
+# maximal times of try for single page
+$max_try = 8
 # imitate human, in second unit
 $suspend_min = 4
 # imitate human, in second unit
