@@ -22,12 +22,6 @@ end
 def download_onepage(driver, page_no)
 	img = async_element(:css, "#mainViewerImgCloakWrapper_#{page_no} img", driver,
 						times: $max_try, timeout: $request_timeout)
-	if not $page_height
-		$page_height = driver.execute_script(
-						"return document.getElementById(\"mainViewerImgCloakWrapper_#{page_no}\").style.height").to_i
-		$view_height = driver.execute_script(
-						"return document.getElementById(\"mainViewerPagesContainerWrapper\").style.height").to_i
-	end
 	# get the encrypted url
 	url = img["src"]
 	Downloader.instance.download(url, page_no)
@@ -61,7 +55,8 @@ def async_element(selector_type, selector, driver, times: 1, timeout:)
 end
 
 def page_pos(page_no, page_height)
-	page_no * (page_height + PAGE_POS_OFFSET)
+	raise ArgumentError, "'page_no' can not be less than 1" if page_no < 1
+	(page_no - 1) * (page_height + PAGE_POS_OFFSET)
 end
 
 # validate configuration
@@ -88,23 +83,23 @@ end
 begin
 	sleep sleep_duration
 	driver.find_element(:id, "readerReadBtnId").click
-
-	# start the downloading logic
 	zoom_btn = async_element(:css, "button.icon-page-zoom-in", driver,
 							 timeout: $request_timeout)
 	$zoom_in.times { zoom_btn.click }
 	$view_doc_url = driver.current_url
-	# TODO support breakpoint download
-	page_no = 1
+	Downloader.instance.detect_view_page_height driver
+
+	page_no = Downloader.instance.last_downloaded_page_no
+	puts "Resume downloading at page \##{page_no}." if page_no != 1
 	while true
+		cur_page_pos = page_pos(page_no, $page_height)
+		break if cur_page_pos >= $view_height
+		# scroll to current page position
+		driver.execute_script("document.getElementById(\"mainViewer\").scrollTop = #{cur_page_pos}")
 		sleep sleep_duration
 		download_onepage(driver, page_no)
-		# one page downloaded
+		puts "Page \##{page_no} downloaded."
 		page_no += 1
-		next_page_pos = page_pos(page_no, $page_height)
-		break if next_page_pos >= $view_height
-		# scroll to next page
-		driver.execute_script("document.getElementById(\"mainViewer\").scrollTop = #{next_page_pos}")
 	end
 	puts "Data successfully downloaded into data folder."
 rescue Selenium::WebDriver::Error::NoSuchElementError
