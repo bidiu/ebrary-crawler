@@ -52,3 +52,4 @@ build-iPhoneSimulator/
 **/config.rb
 *.swp
 cookies/*.txt
+data/*/

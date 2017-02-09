@@ -2,10 +2,11 @@
 
 require "selenium-webdriver"
 require "json"
+require "../config/config.rb"
 require "./global.rb"
 require "./cookie.rb"
 require "./login.rb"
-require "../config/config.rb"
+require "./downloader.rb"
 
 # downloader bootstrap file
 
@@ -27,8 +28,9 @@ def download_onepage(driver, page_no)
 		$view_height = driver.execute_script(
 						"return document.getElementById(\"mainViewerPagesContainerWrapper\").style.height").to_i
 	end
-	# TODO
-	puts img["src"]
+	# get the encrypted url
+	url = img["src"]
+	Downloader.instance.download(url, page_no)
 end
 
 # times - max retry times

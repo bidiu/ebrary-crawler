@@ -1,13 +1,3 @@
-CUR_DIR = __dir__
-COOKIE_DIR_NAME = "cookies"
-COOKIE_FILE_NAME = "cookies.txt"
-DOCID_DIR_NAME = "cookies"
-DOCID_FILE_NAME = "docid.txt"
-
-$cookie_filename = File.join(CUR_DIR, "..", COOKIE_DIR_NAME, COOKIE_FILE_NAME)
-$docid_filename = File.join(CUR_DIR, "..", DOCID_DIR_NAME, DOCID_FILE_NAME)
-
-
 class MyCookie
 	def self.save_cookies(cookie_enumerator)
 		f = File.new($cookie_filename, "w")
@@ -19,7 +9,7 @@ class MyCookie
 
 	# if there's no cookie file, return nil
 	def self.load_cookies
-		if not File.file?($cookie_filename) then return nil end
+		return nil unless File.file?($cookie_filename)
 
 		cookies = []
 		f = File.new($cookie_filename, "r")
@@ -38,7 +28,7 @@ class MyCookie
 
 	# if there's no docid file, return nil
 	def self.load_docid
-		if not File.file?($docid_filename) then return nil end
+		return nil unless File.file?($docid_filename)
 		File.read $docid_filename
 	end
 
