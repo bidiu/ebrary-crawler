@@ -48,7 +48,7 @@ class MyLogin
 		else
 			# no saved session cookies
 			fresh_login = true
-			@@driver.navigate.to $host
+			@@driver.navigate.to $fresh_login_url
 			@@driver.find_element(:class, "summonbox").send_keys $book_title
 			@@driver.find_element(:class, "summonsubmit").click
 			switch_to_new_window @@driver

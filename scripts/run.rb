@@ -93,8 +93,7 @@ begin
 	zoom_btn = async_element(:css, "button.icon-page-zoom-in", driver,
 							 timeout: $request_timeout)
 	$zoom_in.times { zoom_btn.click }
-	page_info_span = async_element(:css, "#tool-pageloc .total-number-of-pages", driver,
-								   timeout: $request_timeout)
+	$view_doc_url = driver.current_url
 	# TODO support breakpoint download
 	page_no = 1
 	while true

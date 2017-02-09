@@ -12,3 +12,7 @@ DATA_DIR_NAME = "data"
 
 $cookie_filename = File.join(CUR_DIR, "..", COOKIE_DIR_NAME, COOKIE_FILE_NAME)
 $docid_filename = File.join(CUR_DIR, "..", DOCID_DIR_NAME, DOCID_FILE_NAME)
+
+$view_doc_url = nil
+
+BUF_SIZE = 4096

@@ -1,4 +1,8 @@
+require "./global.rb"
+
 class MyCookie
+	@@cookies = []
+
 	def self.save_cookies(cookie_enumerator)
 		f = File.new($cookie_filename, "w")
 		cookie_enumerator.each do |cookie|
@@ -8,16 +12,17 @@ class MyCookie
 	end
 
 	# if there's no cookie file, return nil
+	# once loaded in memory, won't load again
 	def self.load_cookies
+		return @@cookies unless @@cookies.empty?
 		return nil unless File.file?($cookie_filename)
 
-		cookies = []
 		f = File.new($cookie_filename, "r")
 		f.each_line do |line|
-			cookies << JSON.parse(line, symbolize_names: true)
+			@@cookies << JSON.parse(line, symbolize_names: true)
 		end
 		f.close
-		cookies
+		@@cookies
 	end
 
 	def self.save_docid(docid)
