@@ -23,7 +23,6 @@ class Downloader
 		@header_cookie.chomp("; ")
 	end
 
-	# TODO retry logic
 	def download(url, page_no)
 		parameters = {}
 		CGI::parse(URI(url).query).each do |name, values|
@@ -48,7 +47,7 @@ class Downloader
 				f.close
 			end
 		else
-			# TODO
+			abort "Failed to download book page \##{page_no}. HTTP Code: #{response.code}."
 		end
 	end
 
