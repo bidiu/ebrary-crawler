@@ -1,24 +1,24 @@
 # or :firefox
-$browser = :chrome
+BROWSER = :chrome
 # the url used to fresh login (without any saved session cookie)
-$fresh_login_url = "https://library.carleton.ca/"
+FRESH_LOGIN_URL = "https://library.carleton.ca/"
 # the login url of the proxy web site
-$login_url = "https://login.proxy.library.carleton.ca/login"
+LOGIN_URL = "https://login.proxy.library.carleton.ca/login"
 # not incude parameters
-$book_url = "http://site.ebrary.com.proxy.library.carleton.ca/lib/oculcarleton/detail.action"
-$cookie_domain = ".library.carleton.ca"
-$book_title = "Cryptography Engineering"
-$result_no = 1
+BOOK_URL = "http://site.ebrary.com.proxy.library.carleton.ca/lib/oculcarleton/detail.action"
+COOKIE_DOMAIN = ".library.carleton.ca"
+BOOK_TITLE = "Cryptography Engineering"
+RESULT_NO = 1
 # in second unit
-$request_timeout = 16
+REQUEST_TIMEOUT = 16
 # maximal times of try for single page
-$max_try = 8
+MAX_TRY = 8
 # imitate human, in second unit
-$suspend_min = 6
+SUSPEND_MIN = 6
 # imitate human, in second unit
-$suspend_max = 10
+SUSPEND_MAX = 10
 # zoomin factor
-$zoom_in = 2
-$user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+ZOOM_IN = 2
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
 $user = "username"
 $pwd = "password"
