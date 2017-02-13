@@ -2,7 +2,7 @@ require "http"
 require "uri"
 require "cgi"
 require "singleton"
-require "./global.rb"
+require_relative "global"
 
 class Downloader
 	include Singleton

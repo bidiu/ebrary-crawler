@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require "./cookie.rb"
+require_relative "cookie"
 
 MyCookie.clear

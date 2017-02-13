@@ -2,11 +2,11 @@
 
 require "selenium-webdriver"
 require "json"
-require "../config/config.rb"
-require "./global.rb"
-require "./cookie.rb"
-require "./login.rb"
-require "./downloader.rb"
+require_relative "../config/config"
+require_relative "global"
+require_relative "cookie"
+require_relative "login"
+require_relative "downloader"
 
 # downloader bootstrap file
 

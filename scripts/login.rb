@@ -1,4 +1,4 @@
-require "./cookie.rb"
+require_relative "cookie"
 
 class MyLogin
 	@@driver = nil

@@ -1,4 +1,4 @@
-require "./global.rb"
+require_relative "global"
 
 class MyCookie
 	@@cookies = []
