@@ -20,5 +20,5 @@ SUSPEND_MAX = 10
 # zoomin factor
 ZOOM_IN = 2
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
-$user = "username"
-$pwd = "password"
+USER = "username"
+PWD = "password"
