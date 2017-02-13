@@ -10,11 +10,11 @@ class Downloader
 	attr_reader :book_title, :dir, :header_cookie
 
 	def initialize
-		@book_title = $book_title
+		@book_title = BOOK_TITLE
 		@dir = File.join CUR_DIR, "..", DATA_DIR_NAME, @book_title
 		Dir.mkdir(@dir) unless File.directory?(@dir)
 
-		HTTP.timeout(:global, connect: $request_timeout, read: $request_timeout)
+		HTTP.timeout(:global, connect: REQUEST_TIMEOUT, read: REQUEST_TIMEOUT)
 		# prepare cookie header
 		@header_cookie = ""
 		MyCookie.load_cookies.each do |cookie|
@@ -35,7 +35,7 @@ class Downloader
 					cookie: @header_cookie,
 					host: $download_host,
 					referer: $view_doc_url,
-					user_agent: $user_agent)
+					user_agent: USER_AGENT)
 					.get(url, params: parameters)
 		if response.code == 200
 			f = File.new(File.join(@dir, "#{page_no}.png"), "w")
@@ -61,7 +61,7 @@ class Downloader
 
 	def detect_view_page_height(driver)
 		async_element(:css, "#mainViewerImgCloakWrapper_1 img", driver,
-							times: $max_try, timeout: $request_timeout)
+							times: MAX_TRY, timeout: REQUEST_TIMEOUT)
 		if not $page_height
 			$page_height = driver.execute_script(
 							"return document.getElementById(\"mainViewerImgCloakWrapper_1\").style.height").to_i

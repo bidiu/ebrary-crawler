@@ -15,13 +15,13 @@ def switch_to_new_window(driver)
 end
 
 def sleep_duration
-	real = rand * ($suspend_max - $suspend_min + 1) + $suspend_min
+	real = rand * (SUSPEND_MAX - SUSPEND_MIN + 1) + SUSPEND_MIN
 	real.to_i
 end
 
 def download_onepage(driver, page_no)
 	img = async_element(:css, "#mainViewerImgCloakWrapper_#{page_no} img", driver,
-						times: $max_try, timeout: $request_timeout)
+						times: MAX_TRY, timeout: REQUEST_TIMEOUT)
 	# get the encrypted url
 	url = img["src"]
 	Downloader.instance.download(url, page_no)
@@ -60,12 +60,12 @@ def page_pos(page_no, page_height)
 end
 
 # validate configuration
-if $suspend_min > $suspend_max
+if SUSPEND_MIN > SUSPEND_MAX
 	abort "'suspend_min' must be less than or equal to 'suspend_max'."
 end
 
 
-MyLogin.set_driver(driver = Selenium::WebDriver.for($browser))
+MyLogin.set_driver(driver = Selenium::WebDriver.for(BROWSER))
 
 # navigate to book detail page
 if MyLogin.to_book_detail
@@ -84,8 +84,8 @@ begin
 	sleep sleep_duration
 	driver.find_element(:id, "readerReadBtnId").click
 	zoom_btn = async_element(:css, "button.icon-page-zoom-in", driver,
-							 timeout: $request_timeout)
-	$zoom_in.times { zoom_btn.click }
+							 timeout: REQUEST_TIMEOUT)
+	ZOOM_IN.times { zoom_btn.click }
 	$view_doc_url = driver.current_url
 	Downloader.instance.detect_view_page_height driver
 

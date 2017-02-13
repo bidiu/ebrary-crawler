@@ -11,8 +11,8 @@ class MyLogin
 	def self.login(driver = nil)
 		set_driver(driver)
 		form = @@driver.find_elements(:css, "form")[1]
-		form.find_element(:name, "user").send_keys $user
-		form.find_element(:name, "pass").send_keys $pwd
+		form.find_element(:name, "user").send_keys USER
+		form.find_element(:name, "pass").send_keys PWD
 		form.find_element(:css, "input[type=\"submit\"]").click
 	end
 
@@ -28,7 +28,7 @@ class MyLogin
 		fresh_login = nil
 		if (cookies = MyCookie.load_cookies)
 			# have cookies right now, although might already expired
-			@@driver.navigate.to $login_url
+			@@driver.navigate.to LOGIN_URL
 			@@driver.manage.delete_all_cookies
 			cookies.each do |cookie|
 				if cookie = process_cookie(cookie)
@@ -36,7 +36,7 @@ class MyLogin
 				end
 			end
 			sleep sleep_duration
-			@@driver.navigate.to "#{$book_url}?docID=#{MyCookie.load_docid}"
+			@@driver.navigate.to "#{BOOK_URL}?docID=#{MyCookie.load_docid}"
 			if login_page?
 				# cookies expired
 				fresh_login = true
@@ -48,13 +48,13 @@ class MyLogin
 		else
 			# no saved session cookies
 			fresh_login = true
-			@@driver.navigate.to $fresh_login_url
-			@@driver.find_element(:class, "summonbox").send_keys $book_title
+			@@driver.navigate.to FRESH_LOGIN_URL
+			@@driver.find_element(:class, "summonbox").send_keys BOOK_TITLE
 			@@driver.find_element(:class, "summonsubmit").click
 			switch_to_new_window @@driver
 			# wait for asynchronous request completed
 			begin
-				wait = Selenium::WebDriver::Wait.new timeout: $request_timeout
+				wait = Selenium::WebDriver::Wait.new timeout: REQUEST_TIMEOUT
 				wait.until do
 					@@driver.find_elements(:css, "div.inner>ul>li").size > 0
 				end
@@ -63,7 +63,7 @@ class MyLogin
 			end
 			# at list page right now
 			sleep sleep_duration
-			@@driver.find_elements(:css, "div.inner>ul>li")[$result_no + 1]
+			@@driver.find_elements(:css, "div.inner>ul>li")[RESULT_NO + 1]
 				.find_elements(:css, "a")[0].click
 			switch_to_new_window @@driver
 			# login
@@ -75,7 +75,7 @@ class MyLogin
 
 	# if not valid cookie, then return nil
 	def self.process_cookie(cookie)
-		cookie[:domain] = $cookie_domain unless $cookie_domain.include? cookie[:domain]
+		cookie[:domain] = COOKIE_DOMAIN unless COOKIE_DOMAIN.include? cookie[:domain]
 		cookie[:expires] = nil if cookie[:expires]
 		cookie
 	end
