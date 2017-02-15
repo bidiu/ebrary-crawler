@@ -5,7 +5,7 @@ require "uri"
 require "cgi"
 require "singleton"
 
-require_relative "ebrary-dl/config"
+require_relative "ebrary-dl/config/config"
 require_relative "ebrary-dl/cookie"
 require_relative "ebrary-dl/login"
 require_relative "ebrary-dl/downloader"
@@ -27,11 +27,11 @@ module Ebrary
 		DATA_DIR_NAME = "data"
 
 		BUF_SIZE = 4096
+
+		$page_height = nil
+		$view_height = nil
+		$view_doc_url = nil
+		$cookie_filename = File.join(GEM_LIB_DIR, GEM_NAME, COOKIE_DIR_NAME, COOKIE_FILE_NAME)
+		$docid_filename = File.join(GEM_LIB_DIR, GEM_NAME, DOCID_DIR_NAME, DOCID_FILE_NAME)
 	end
 end
-
-$page_height = nil
-$view_height = nil
-$view_doc_url = nil
-$cookie_filename = File.join(GEM_LIB_DIR, GEM_NAME, COOKIE_DIR_NAME, COOKIE_FILE_NAME)
-$docid_filename = File.join(GEM_LIB_DIR, GEM_NAME, DOCID_DIR_NAME, DOCID_FILE_NAME)
