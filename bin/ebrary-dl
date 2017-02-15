@@ -1,30 +1,24 @@
 #!/usr/bin/env ruby
 
-require "selenium-webdriver"
-require "json"
-require_relative "../config/config"
-require_relative "global"
-require_relative "cookie"
-require_relative "login"
-require_relative "downloader"
+require_relative "../lib/ebrary-dl"
 
-# downloader bootstrap file
+# downloader executable
 
 def switch_to_new_window(driver)
 	driver.switch_to.window driver.window_handles[-1]
 end
 
 def sleep_duration
-	real = rand * (SUSPEND_MAX - SUSPEND_MIN + 1) + SUSPEND_MIN
+	real = rand * (Ebrary::Dl::SUSPEND_MAX - Ebrary::Dl::SUSPEND_MIN + 1) + Ebrary::Dl::SUSPEND_MIN
 	real.to_i
 end
 
 def download_onepage(driver, page_no)
 	img = async_element(:css, "#mainViewerImgCloakWrapper_#{page_no} img", driver,
-						times: MAX_TRY, timeout: REQUEST_TIMEOUT)
+						times: Ebrary::Dl::MAX_TRY, timeout: Ebrary::Dl::REQUEST_TIMEOUT)
 	# get the encrypted url
 	url = img["src"]
-	Downloader.instance.download(url, page_no)
+	Ebrary::Dl::Downloader.instance.download(url, page_no)
 end
 
 # times - max retry times
@@ -56,22 +50,22 @@ end
 
 def page_pos(page_no, page_height)
 	raise ArgumentError, "'page_no' can not be less than 1" if page_no < 1
-	(page_no - 1) * (page_height + PAGE_POS_OFFSET)
+	(page_no - 1) * (page_height + Ebrary::Dl::PAGE_POS_OFFSET)
 end
 
 # validate configuration
-if SUSPEND_MIN > SUSPEND_MAX
+if Ebrary::Dl::SUSPEND_MIN > Ebrary::Dl::SUSPEND_MAX
 	abort "'suspend_min' must be less than or equal to 'suspend_max'."
 end
 
 
-MyLogin.set_driver(driver = Selenium::WebDriver.for(BROWSER))
+Ebrary::Dl::MyLogin.set_driver(driver = Selenium::WebDriver.for(Ebrary::Dl::BROWSER))
 
 # navigate to book detail page
-if MyLogin.to_book_detail
+if Ebrary::Dl::MyLogin.to_book_detail
 	# save cookies & docid
-	MyCookie.save_cookies driver.manage.all_cookies.each
-	MyCookie.save_docid(/\d+$/.match(driver.current_url))
+	Ebrary::Dl::MyCookie.save_cookies driver.manage.all_cookies.each
+	Ebrary::Dl::MyCookie.save_docid(/\d+$/.match(driver.current_url))
 else
 	puts "Just logged in with following saved cookies: "
 	driver.manage.all_cookies.each do |cookie|
@@ -84,12 +78,12 @@ begin
 	sleep sleep_duration
 	driver.find_element(:id, "readerReadBtnId").click
 	zoom_btn = async_element(:css, "button.icon-page-zoom-in", driver,
-							 timeout: REQUEST_TIMEOUT)
-	ZOOM_IN.times { zoom_btn.click }
+							 timeout: Ebrary::Dl::REQUEST_TIMEOUT)
+	Ebrary::Dl::ZOOM_IN.times { zoom_btn.click }
 	$view_doc_url = driver.current_url
-	Downloader.instance.detect_view_page_height driver
+	Ebrary::Dl::Downloader.instance.detect_view_page_height driver
 
-	page_no = Downloader.instance.last_downloaded_page_no
+	page_no = Ebrary::Dl::Downloader.instance.last_downloaded_page_no
 	puts "Resume downloading at page \##{page_no}." if page_no != 1
 	while true
 		cur_page_pos = page_pos(page_no, $page_height)

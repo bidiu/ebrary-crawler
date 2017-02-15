@@ -51,5 +51,6 @@ build-iPhoneSimulator/
 
 **/config.rb
 *.swp
-cookies/*.txt
-data/*/
+**/cookies/*.txt
+**/data
+!.gitkeep

@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/ebrary-dl"
+
+Ebrary::Dl::MyCookie.clear
