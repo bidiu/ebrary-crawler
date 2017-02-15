@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
 	spec.authors		= ["bedew"]
 	spec.email			= "sunhe1007@126.com"
 	# TODO
-	spec.files			= Dir["lib/**/*.rb"] + Dir["bin/*"]
+	spec.files			= Dir["lib/**/*.rb"] + Dir["lib/**/.gitkeep"] + Dir["bin/*"]
 	spec.files.reject! do |filename|
 		filename.include? "config.rb"
 	end
